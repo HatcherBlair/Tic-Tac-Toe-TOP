@@ -1,9 +1,10 @@
-const gameBoard = (function () {
+// Contains the logic and scores for the game
+const game = (function () {
     // Private vars
     let playerXScore = 0;
     let playerOScore = 0;
     let gameArray = [[], [], []];
-    let playerOneTurn = true;
+    let playerXTurn = true;
 
     // Getters
     const getPlayerScore = (player) => player == 'X' ? playerXScore: playerOScore;
@@ -12,6 +13,12 @@ const gameBoard = (function () {
     // Setters
     const setPlayerScore = (player) => player == 'X' ? playerXScore++: playerOScore++;
     const setGameArray = (array) => gameArray = array;
+    const setGameTile = (i, j) => {
+        gameArray[i][j] = playerXTurn ? 'X' : 'O';
+        playerXTurn = !playerXTurn;
+        const isOver = gameOver();
+        if (isOver) gameBoard.displayGameOver(isOver);
+    }
     
     // Prints the gameboard in the console
     const printGame = () => console.log(gameArray);
@@ -24,12 +31,12 @@ const gameBoard = (function () {
             if (gameArray[0][1] == 'X' && gameArray[0][2] == 'X') {
                 // Top row win
                 setPlayerScore('X');
-                return true;
+                return 'X';
             }
             if (gameArray[1][0] == 'X' && gameArray[2][0] == 'X') {
                 // Left Column win
                 setPlayerScore('X');
-                return true;
+                return 'X';
             }
         }
         // Checking for Bottom row and Right column
@@ -37,12 +44,12 @@ const gameBoard = (function () {
             if (gameArray[2][1] == 'X' && gameArray[2][0] == 'X') {
                 // Bottom row win
                 setPlayerScore('X');
-                return true;
+                return 'X';
             }
             if (gameArray[1][2] == 'X' && gameArray[0][2] == 'X') {
                 // Right column win
                 setPlayerScore('X');
-                return true;
+                return 'X';
             }
         }
         // Checking for diagnols and middle row/column
@@ -50,19 +57,19 @@ const gameBoard = (function () {
             if (gameArray[1][0] == 'X' && gameArray[1][2] == 'X') {
                 // Middle row win
                 setPlayerScore('X');
-                return true;
+                return 'X';
             } else if (gameArray[0][1] == 'X' && gameArray[2][1] == 'X') {
                 // Middle column win
                 setPlayerScore('X');
-                return true;
+                return 'X';
             } else if (gameArray[0][0] == 'X' && gameArray[2][2] == 'X') {
                 // Left diagnol win
                 setPlayerScore('X');
-                return true;
+                return 'X';
             } else if (gameArray[2][0] == 'X' && gameArray[0][2] == 'X') {
                 // Right diagnol win
                 setPlayerScore('X');
-                return true;
+                return 'X';
             }
         }
 
@@ -72,12 +79,12 @@ const gameBoard = (function () {
             if (gameArray[0][1] == 'O' && gameArray[0][2] == 'O') {
                 // Top row win
                 setPlayerScore('O');
-                return true;
+                return 'O';
             }
             if (gameArray[1][0] == 'O' && gameArray[2][0] == 'O') {
                 // Left Column win
                 setPlayerScore('O');
-                return true;
+                return 'O';
             }
         } 
         // Checking for Bottom row and Right column
@@ -85,12 +92,12 @@ const gameBoard = (function () {
             if (gameArray[2][1] == 'O' && gameArray[2][0] == 'O') {
                 // Bottom row win
                 setPlayerScore('O');
-                return true;
+                return 'O';
             }
             if (gameArray[1][2] == 'O' && gameArray[0][2] == 'O') {
                 // Right column win
                 setPlayerScore('O');
-                return true;
+                return 'O';
             }
         }
         // Checking for diagnols and middle row/column
@@ -98,25 +105,76 @@ const gameBoard = (function () {
             if (gameArray[1][0] == 'O' && gameArray[1][2] == 'O') {
                 // Middle row win
                 setPlayerScore('O');
-                return true;
+                return 'O';
             } else if (gameArray[0][1] == 'O' && gameArray[2][1] == 'O') {
                 // Middle column win
                 setPlayerScore('O');
-                return true;
+                return 'O';
             } else if (gameArray[0][0] == 'O' && gameArray[2][2] == 'O') {
                 // Left diagnol win
                 setPlayerScore('O');
-                return true;
+                return 'O';
             } else if (gameArray[2][0] == 'O' && gameArray[0][2] == 'O') {
                 // Right diagnol win
                 setPlayerScore('O');
-                return true;
+                return 'O';
             }
         }
+
+        // Check for draw
+        // I'm sure there is a better way to do this
+        let drawTest = 0;
+        for (let i=0; i < 3; i++) {
+            for (let j=0; j < 3; j++) {
+                if (gameArray[i][j]) drawTest++;
+            }
+        }
+        if (drawTest == 9) return 'draw';
 
         // Game not over
         return false;
     };
 
-    return { getPlayerScore, getGameArray, setPlayerScore, printGame, gameOver, setGameArray};
+    return { getPlayerScore, getGameArray, setPlayerScore, printGame, gameOver, setGameArray, setGameTile};
 })();
+
+// Manages the visuals for the game
+const gameBoard = (function ()  {
+    // Creates the board visual
+    const newBoard = () => {
+        const boardContainer = document.querySelector('.game-board');
+        for (let i=0; i < 9; i++) {
+            const boardSquare = document.createElement('div');
+            boardSquare.classList.add('game-tile');
+            boardSquare.addEventListener('click', () => {
+                if (!boardSquare.textContent) {
+                    const column = i % 3;
+                    const row = Math.floor(i/3);
+                    game.setGameTile(row, column);
+                    updateBoard();
+                }
+            });
+
+            boardContainer.appendChild(boardSquare);
+        };
+    };
+
+    // Updates the board Visual
+    const updateBoard = () => {
+        const boardTiles = document.querySelectorAll('.game-tile');
+        const gameArray = game.getGameArray();
+        boardTiles.forEach((tile, i) => {
+            const column = i % 3;
+            const row = Math.floor(i/3);
+            if (gameArray[row][column] == 'X') {
+                tile.textContent = 'X';
+            } else if (gameArray[row][column] == 'O') {
+                tile.textContent = 'O';
+            }
+        })
+    }
+
+    return {newBoard};
+})();
+
+gameBoard.newBoard();
