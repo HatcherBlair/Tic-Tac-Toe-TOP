@@ -1,6 +1,52 @@
+:root {
+    --back: #f8f8f8;
+    --back-alt: #e8e8e8;
+    --back-third: #d3d3d3;
+    --board-lines: #333;
+    --x-marker: #69c;
+    --o-marker: #f66;
+    --accent: #ffd700;
+}
+
+body {
+    background-color: var(--back-alt);
+}
+
+.header {
+    display: flex;
+    justify-content: space-around;
+    border-bottom: 2px dashed var(--accent);
+    margin-bottom: 10vh;
+    align-items: baseline;
+    gap: 24vw;
+}
+
 .content {
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
+    gap: 5vw;
+}
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.btn-ctnr {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.btn-ctnr > * {
+    height: 30px;
+}
+
+.reset-game-btn, .reset-session-btn {
+    border-radius: 10px;
+    background-color: var(--back-third);
+    border-color: var(--board-lines);
 }
 
 .game-board {
@@ -13,7 +59,12 @@
 .game-tile {
     width: 120px;
     height: 120px;
-    border: 3px solid blue;
+    border: 3px solid var(--board-lines);
+    background-color: var(--back);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24pt;
 }
 
 .modal-ctnr {
@@ -27,17 +78,19 @@
 }
 
 .modal-body {
-    border: 1px solid green;
+    border: 1px dashed var(--accent);
     width: 66%;
-    margin: 25% auto;
+    margin: 15% auto;
     display: grid;
     grid-template-columns: 8fr 1fr;
     grid-template-rows: 2fr 1fr;
     align-items: center;
+    background-color: var(--back-third);
 }
 
 .close-btn {
     border: 1px solid black;
+    background-color: var(--o-marker);
     border-radius: 100%;
     align-self: start;
     justify-self: end;
@@ -48,6 +101,8 @@
 
 .reset-btn {
     border-radius: 10px;
+    background-color: var(--x-marker);
+    border-color: var(--accent);
     height: 10vh;
     width: 20vw;
     grid-column: 1/-1;

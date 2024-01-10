@@ -91,6 +91,10 @@ const game = (function () {
 // Manages the visuals for the game
 const gameBoard = (function ()  {
 
+    // Text Color for X and O
+    const oColor = '#f66';
+    const xColor = '#69c';
+
     // Score display DOM elements
     const playerXScoreDOM = document.getElementById("player-x");
     const playerOScoreDOM = document.getElementById("player-o");
@@ -145,8 +149,10 @@ const gameBoard = (function ()  {
             const row = Math.floor(i/3);
             if (gameArray[row][column] == 'X') {
                 tile.textContent = 'X';
+                tile.style.color = xColor;
             } else if (gameArray[row][column] == 'O') {
                 tile.textContent = 'O';
+                tile.style.color = oColor;
             }
         })
     }
