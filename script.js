@@ -142,7 +142,9 @@ const game = (function () {
 const gameBoard = (function ()  {
     // Creates the board visual
     const newBoard = () => {
+        game.setGameArray([[], [], []]);
         const boardContainer = document.querySelector('.game-board');
+        boardContainer.innerHTML = "";
         for (let i=0; i < 9; i++) {
             const boardSquare = document.createElement('div');
             boardSquare.classList.add('game-tile');
@@ -174,7 +176,53 @@ const gameBoard = (function ()  {
         })
     }
 
-    return {newBoard};
+    // Displays the game over screen
+    const displayGameOver = (winner) => {
+        // Create the modal container and add it to the body
+        const docBody = document.querySelector('body');
+        const gameOverContainer = document.createElement('div');
+        gameOverContainer.classList.add('modal-ctnr');
+        docBody.appendChild(gameOverContainer);
+
+        // Modal body
+        const gameOverBody = document.createElement('div');
+        gameOverBody.classList.add('modal-body');
+        gameOverContainer.appendChild(gameOverBody);
+
+        // Modal text
+        const modalTextBox = document.createElement('p');
+        modalTextBox.classList.add('modal-text');   
+        modalTextBox.textContent = 'The winner is ';
+        if (winner == 'draw') {
+            modalTextBox.textContent = 'Draw! Nobody wins :(';
+        } else if (winner == 'X') {
+             modalTextBox.textContent += 'X!';
+        } else {
+            modalTextBox.textContent += 'O!';
+        }        
+        gameOverBody.appendChild(modalTextBox);
+
+        // Modal close btn
+        const modalCloseBtn = document.createElement('button');
+        modalCloseBtn.classList.add('close-btn');
+        modalCloseBtn.textContent = 'X';
+        gameOverBody.appendChild(modalCloseBtn);
+        modalCloseBtn.addEventListener('click', () => gameOverContainer.remove());
+
+        // Modal reset btn
+        const modalResetBtn = document.createElement('button');
+        modalResetBtn.classList.add('reset-btn');
+        modalResetBtn.textContent = 'New Game?';
+        gameOverBody.appendChild(modalResetBtn);
+        modalResetBtn.addEventListener('click', () => {
+            newBoard();
+            gameOverContainer.remove();
+        });
+
+        
+    }
+
+    return {newBoard, displayGameOver};
 })();
 
 gameBoard.newBoard();
